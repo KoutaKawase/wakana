@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"net/url"
 	"os"
 	"strings"
@@ -23,7 +25,37 @@ func action(c *cli.Context) error {
 	}
 
 	downloadURL = ConvertURL(downloadURL)
+	outputPath := "./demo.go"
+
+	err := downloadFile(outputPath, downloadURL)
+
+	if err != nil {
+		cli.Exit(err, 87)
+	}
+
+	fmt.Println("Downloaded: " + downloadURL)
+
 	return nil
+}
+
+func downloadFile(filepath string, url string) error {
+	response, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+
+	defer response.Body.Close()
+
+	out, err := os.Create(filepath)
+
+	if err != nil {
+		return err
+	}
+
+	defer out.Close()
+
+	_, err = io.Copy(out, response.Body)
+	return err
 }
 
 //IsValidURL github.com/.../blob/...じゃないURLを弾く
