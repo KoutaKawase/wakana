@@ -42,3 +42,22 @@ func Test有効なワードが含まれてないURLならfalseを返すか(t *te
 		}
 	}
 }
+
+func Test最後のファイル名のみを切り出せているか(t *testing.T) {
+	cases := []struct {
+		in, want string
+	}{
+		{downloadURL, "demo.go"},
+		{"https://github.com/mattn/go-gtk/blob/master/_example/demo/demo", "demo"},
+		{"https://github.com/mattn/go-gtk/blob/master/_example/demo/fugafuga.py/", "fugafuga.py"},
+		{"https://github.com/mattn/hoge/blob/master/fuga/piyo.test.ts", "piyo.test.ts"},
+	}
+
+	for _, c := range cases {
+		got := GetFileName(c.in)
+
+		if got != c.want {
+			t.Errorf("GetFileName(%s) == %s, want %s", c.in, got, c.want)
+		}
+	}
+}

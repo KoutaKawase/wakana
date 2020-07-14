@@ -25,7 +25,7 @@ func action(c *cli.Context) error {
 	}
 
 	downloadURL = ConvertURL(downloadURL)
-	outputPath := "./demo.go"
+	outputPath := fmt.Sprintf("./%s", GetFileName(downloadURL))
 
 	err := downloadFile(outputPath, downloadURL)
 
@@ -36,6 +36,18 @@ func action(c *cli.Context) error {
 	fmt.Println("Downloaded: " + downloadURL)
 
 	return nil
+}
+
+//GetFileName 絶対パスのファイルURLからファイル名を取得する
+func GetFileName(downloadURL string) string {
+	//一番最後がスラッシュで終わっていればそのスラッシュを除いたものを取得
+	if downloadURL[len(downloadURL)-1:] == "/" {
+		downloadURL = downloadURL[:len(downloadURL)-1]
+	}
+	slashLastIndex := strings.LastIndex(downloadURL, "/")
+	//+1しないと /demo.goみたいにスラッシュ自身が入るので+1している
+	fileName := downloadURL[slashLastIndex+1:]
+	return fileName
 }
 
 func downloadFile(filepath string, url string) error {
