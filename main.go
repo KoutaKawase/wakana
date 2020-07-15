@@ -25,7 +25,14 @@ func action(c *cli.Context) error {
 	}
 
 	downloadURL = ConvertURL(downloadURL)
-	outputPath := fmt.Sprintf("./%s", GetFileName(downloadURL))
+	var outputPath string
+	nameOption := c.String("name")
+
+	if directoryPath := c.String("output"); directoryPath != "" {
+		outputPath = directoryPath + GetFileName(downloadURL, nameOption)
+	} else {
+		outputPath = fmt.Sprintf("./%s", GetFileName(downloadURL, nameOption))
+	}
 
 	err := downloadFile(outputPath, downloadURL)
 
@@ -33,13 +40,18 @@ func action(c *cli.Context) error {
 		cli.Exit(err, 87)
 	}
 
-	fmt.Println("Downloaded: " + downloadURL)
+	fmt.Println("Downloaded from " + downloadURL)
 
 	return nil
 }
 
 //GetFileName 絶対パスのファイルURLからファイル名を取得する
-func GetFileName(downloadURL string) string {
+func GetFileName(downloadURL string, nameOption string) string {
+	//ユーザー指定のファイルネームオプションがあればそのままそれを返す
+	if nameOption != "" {
+		return nameOption
+	}
+
 	//一番最後がスラッシュで終わっていればそのスラッシュを除いたものを取得
 	if downloadURL[len(downloadURL)-1:] == "/" {
 		downloadURL = downloadURL[:len(downloadURL)-1]
@@ -93,8 +105,20 @@ func ConvertURL(downloadURL string) string {
 
 func main() {
 	app := &cli.App{
-		Name:   "Wakana",
-		Usage:  "single file downloader for GitHub.",
+		Name:  "Wakana",
+		Usage: "single file downloader for GitHub.",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "output",
+				Aliases: []string{"o"},
+				Usage:   "Specify the output destination. example) /path/to/outputDirectory `directoryPath`",
+			},
+			&cli.StringFlag{
+				Name:    "name",
+				Aliases: []string{"n"},
+				Usage:   "Specify the file name to use for the downloaded file.",
+			},
+		},
 		Action: action,
 	}
 

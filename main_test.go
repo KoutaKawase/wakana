@@ -45,19 +45,29 @@ func Test有効なワードが含まれてないURLならfalseを返すか(t *te
 
 func Test最後のファイル名のみを切り出せているか(t *testing.T) {
 	cases := []struct {
-		in, want string
+		in, in2, want string
 	}{
-		{downloadURL, "demo.go"},
-		{"https://github.com/mattn/go-gtk/blob/master/_example/demo/demo", "demo"},
-		{"https://github.com/mattn/go-gtk/blob/master/_example/demo/fugafuga.py/", "fugafuga.py"},
-		{"https://github.com/mattn/hoge/blob/master/fuga/piyo.test.ts", "piyo.test.ts"},
+		{downloadURL, "", "demo.go"},
+		{"https://github.com/mattn/go-gtk/blob/master/_example/demo/demo", "", "demo"},
+		{"https://github.com/mattn/go-gtk/blob/master/_example/demo/fugafuga.py/", "", "fugafuga.py"},
+		{"https://github.com/mattn/hoge/blob/master/fuga/piyo.test.ts", "", "piyo.test.ts"},
 	}
 
 	for _, c := range cases {
-		got := GetFileName(c.in)
+		got := GetFileName(c.in, c.in2)
 
 		if got != c.want {
-			t.Errorf("GetFileName(%s) == %s, want %s", c.in, got, c.want)
+			t.Errorf("GetFileName(%s, %s) == %s, want %s", c.in, c.in2, got, c.want)
 		}
+	}
+}
+
+func Testユーザー指定のファイル名オプションがあればそれが返ってくる(t *testing.T) {
+	nameOption := "hoge.go"
+
+	got := GetFileName(downloadURL, nameOption)
+
+	if got != nameOption {
+		t.Errorf("ユーザー指定のファイル名指定option nameがあればその値を返さねばなりません。 got %s", got)
 	}
 }
