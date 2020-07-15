@@ -10,3 +10,29 @@
 ## 🤔 Description
 
 Simple CLI to download a single file on the Github repository.
+
+## 😨 Usage
+
+```
+USAGE:
+   wakana [global options] command [command options] [arguments...]
+
+GLOBAL OPTIONS:
+   --output directoryPath, -o directoryPath  Specify the output destination. example: /path/to/outputDirectory directoryPath
+   --name fileName, -n fileName   Specify the file name to use for the downloaded file.
+   --help, -h                                show help (default: false)
+```
+
+## 😍 Download
+
+<a href="
+https://github.com/KoutaKawase/wakana/releases/tag/v1.0.0">Release</a>
+
+## 🎫 License
+
+MIT
+
+## 👀
+
+<a href="https://twitter.com/omochizou">Twitter</a>
+<a href="https://qiita.com/omochizou">Qiita</a>

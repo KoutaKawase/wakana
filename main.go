@@ -124,7 +124,7 @@ func main() {
 			&cli.StringFlag{
 				Name:    "name",
 				Aliases: []string{"n"},
-				Usage:   "Specify the file name to use for the downloaded file.",
+				Usage:   "Specify the file name to use for the downloaded file. `fileName`",
 			},
 		},
 		Action: action,
