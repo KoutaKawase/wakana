@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/urfave/cli/v2"
 )
@@ -38,13 +39,16 @@ func action(c *cli.Context) error {
 		outputPath = GetFileName(downloadURL, nameOption)
 	}
 
+	start := time.Now()
 	err := downloadFile(outputPath, downloadURL)
+	end := time.Now()
 
 	if err != nil {
 		cli.Exit(err, 1)
 	}
 
 	fmt.Println("Downloaded from " + downloadURL)
+	fmt.Printf("Done. Time: %fs\n", (end.Sub(start)).Seconds())
 
 	return nil
 }
