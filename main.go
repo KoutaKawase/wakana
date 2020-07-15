@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/urfave/cli/v2"
@@ -21,7 +22,7 @@ func action(c *cli.Context) error {
 	downloadURL := c.Args().Get(0)
 
 	if !IsValidURL(downloadURL) {
-		return cli.Exit("Invalid argument. Please input URL.", 86)
+		return cli.Exit("Invalid argument. Please input URL.", 1)
 	}
 
 	downloadURL = ConvertURL(downloadURL)
@@ -29,15 +30,18 @@ func action(c *cli.Context) error {
 	nameOption := c.String("name")
 
 	if directoryPath := c.String("output"); directoryPath != "" {
-		outputPath = directoryPath + GetFileName(downloadURL, nameOption)
+		if _, err := os.Stat(directoryPath); os.IsNotExist(err) {
+			return cli.Exit("Invalid directory path.", 1)
+		}
+		outputPath = path.Join(directoryPath, GetFileName(downloadURL, nameOption))
 	} else {
-		outputPath = fmt.Sprintf("./%s", GetFileName(downloadURL, nameOption))
+		outputPath = GetFileName(downloadURL, nameOption)
 	}
 
 	err := downloadFile(outputPath, downloadURL)
 
 	if err != nil {
-		cli.Exit(err, 87)
+		cli.Exit(err, 1)
 	}
 
 	fmt.Println("Downloaded from " + downloadURL)
